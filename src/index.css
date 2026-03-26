@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Noto Sans TC", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Noto Serif TC", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --color-warm-bg: #fdfcf8;
+  --color-warm-card: #ffffff;
+  --color-warm-text: #4a4238;
+  --color-warm-muted: #8c8273;
+  --color-warm-accent: #cb997e;
+  --color-warm-border: #e8e4d9;
+  --color-olive: #6b705c;
+  --color-sage: #a5a58d;
+}
+
+body {
+  background-color: var(--color-warm-bg);
+  color: var(--color-warm-text);
+  font-family: var(--font-sans);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+}
