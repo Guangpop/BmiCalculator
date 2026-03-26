@@ -1,17 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Activity, Apple, Heart, Info, Scale, Ruler, User, ArrowRight, RefreshCcw, Loader2, Target, Dumbbell, ChevronDown, ChevronUp } from 'lucide-react';
-import { GoogleGenAI, Type } from "@google/genai";
-
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
-interface AdviceObject {
-  category: string;
-  summary: string;
-  diet: string[];
-  exercise: string[];
-  precautions: string[];
-}
+import { getAdvice, type AdviceObject } from './getAdvice';
 
 export default function App() {
   const [height, setHeight] = useState('');
@@ -49,61 +39,20 @@ export default function App() {
     const calculatedBmi = w / ((h / 100) * (h / 100));
     setBmi(calculatedBmi);
 
-    const fitnessLevelMap: Record<string, string> = {
-      sedentary: '幾乎不運動',
-      light: '輕度活動',
-      moderate: '中度活動',
-      active: '高度活動',
-    };
-
-    const goalMap: Record<string, string> = {
-      lose_weight: '減重',
-      maintain: '維持現狀',
-      gain_muscle: '增肌',
-    };
-
     try {
-      const prompt = `
-        我是一位 ${a} 歲的 ${gender === 'male' ? '男性' : gender === 'female' ? '女性' : '人'}。
-        我的身高是 ${h} 公分，體重是 ${w} 公斤，計算出的 BMI 為 ${calculatedBmi.toFixed(1)}。
-        我的日常活動量是：${fitnessLevelMap[fitnessLevel]}。
-        我的主要健康目標是：${goalMap[primaryGoal]}${targetWeight ? `，目標體重為 ${targetWeight} 公斤` : ''}。
-        請根據這些數值與目標，給我一份詳細、溫馨且專業的健康建議。語氣要像是一位溫柔的家庭醫師。
-        請以 JSON 格式回傳，包含以下欄位：
-        - category: BMI 類別 (例如：體重過輕、健康體位、體重過重、輕度肥胖等)
-        - summary: 一段溫暖的總結與鼓勵 (約 50-80 字)
-        - diet: 3-5 點具體的飲食建議 (字串陣列)
-        - exercise: 3-5 點具體的運動建議 (字串陣列)
-        - precautions: 3-5 點日常注意事項 (字串陣列)
-      `;
-
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: prompt,
-        config: {
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              category: { type: Type.STRING },
-              summary: { type: Type.STRING },
-              diet: { type: Type.ARRAY, items: { type: Type.STRING } },
-              exercise: { type: Type.ARRAY, items: { type: Type.STRING } },
-              precautions: { type: Type.ARRAY, items: { type: Type.STRING } },
-            },
-            required: ["category", "summary", "diet", "exercise", "precautions"],
-          },
-        },
+      const result = await getAdvice({
+        bmi: calculatedBmi,
+        age: a,
+        gender,
+        fitnessLevel,
+        goal: primaryGoal,
+        weight: w,
+        targetWeight: targetWeight ? parseFloat(targetWeight) : undefined,
       });
-
-      if (response.text) {
-        setAdvice(JSON.parse(response.text));
-      } else {
-        setError('無法取得建議，請稍後再試。');
-      }
+      setAdvice(result);
     } catch (err) {
       console.error(err);
-      setError('發生錯誤，請檢查網路連線或稍後再試。');
+      setError('發生錯誤，請稍後再試。');
     } finally {
       setLoading(false);
     }
