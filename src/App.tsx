@@ -86,7 +86,7 @@ export default function App() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Input Section */}
-          <div className={`lg:col-span-${bmi ? '4' : '6 lg:col-start-4'} transition-all duration-500 ease-in-out`}>
+          <div className={`${bmi ? 'lg:col-span-4' : 'lg:col-span-6 lg:col-start-4'} transition-all duration-500 ease-in-out`}>
             <div className="bg-white rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-[var(--color-warm-border)]">
               <h2 className="text-2xl font-serif font-semibold mb-6 flex items-center gap-2 text-[var(--color-olive)]">
                 <User className="w-6 h-6 text-[var(--color-warm-accent)]" />
