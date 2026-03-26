@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Activity, Apple, Heart, Info, Scale, Ruler, User, ArrowRight, RefreshCcw, Loader2 } from 'lucide-react';
+import { Activity, Apple, Heart, Info, Scale, Ruler, User, ArrowRight, RefreshCcw, Loader2, Target, Dumbbell, ChevronDown, ChevronUp } from 'lucide-react';
 import { GoogleGenAI, Type } from "@google/genai";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
@@ -19,6 +19,11 @@ export default function App() {
   const [age, setAge] = useState('');
   const [gender, setGender] = useState('female');
   
+  const [targetWeight, setTargetWeight] = useState('');
+  const [fitnessLevel, setFitnessLevel] = useState('moderate');
+  const [primaryGoal, setPrimaryGoal] = useState('maintain');
+  const [showAdvanced, setShowAdvanced] = useState(false);
+
   const [bmi, setBmi] = useState<number | null>(null);
   const [advice, setAdvice] = useState<AdviceObject | null>(null);
   const [loading, setLoading] = useState(false);
@@ -44,11 +49,26 @@ export default function App() {
     const calculatedBmi = w / ((h / 100) * (h / 100));
     setBmi(calculatedBmi);
 
+    const fitnessLevelMap: Record<string, string> = {
+      sedentary: '幾乎不運動',
+      light: '輕度活動',
+      moderate: '中度活動',
+      active: '高度活動',
+    };
+
+    const goalMap: Record<string, string> = {
+      lose_weight: '減重',
+      maintain: '維持現狀',
+      gain_muscle: '增肌',
+    };
+
     try {
       const prompt = `
         我是一位 ${a} 歲的 ${gender === 'male' ? '男性' : gender === 'female' ? '女性' : '人'}。
         我的身高是 ${h} 公分，體重是 ${w} 公斤，計算出的 BMI 為 ${calculatedBmi.toFixed(1)}。
-        請根據這些數值，給我一份詳細、溫馨且專業的健康建議。語氣要像是一位溫柔的家庭醫師。
+        我的日常活動量是：${fitnessLevelMap[fitnessLevel]}。
+        我的主要健康目標是：${goalMap[primaryGoal]}${targetWeight ? `，目標體重為 ${targetWeight} 公斤` : ''}。
+        請根據這些數值與目標，給我一份詳細、溫馨且專業的健康建議。語氣要像是一位溫柔的家庭醫師。
         請以 JSON 格式回傳，包含以下欄位：
         - category: BMI 類別 (例如：體重過輕、健康體位、體重過重、輕度肥胖等)
         - summary: 一段溫暖的總結與鼓勵 (約 50-80 字)
@@ -94,6 +114,10 @@ export default function App() {
     setWeight('');
     setAge('');
     setGender('female');
+    setTargetWeight('');
+    setFitnessLevel('moderate');
+    setPrimaryGoal('maintain');
+    setShowAdvanced(false);
     setBmi(null);
     setAdvice(null);
     setError(null);
@@ -104,7 +128,7 @@ export default function App() {
       <div className="max-w-5xl mx-auto">
         <header className="mb-12 text-center mt-8">
           <h1 className="text-4xl md:text-5xl font-serif font-bold text-[var(--color-olive)] mb-4">
-            知己健康計算機
+            知己健康 - BMI 計算機
           </h1>
           <p className="text-[var(--color-warm-muted)] text-lg max-w-xl mx-auto">
             了解自己的身體密碼，讓我們為您量身打造溫暖的健康指南。
@@ -178,6 +202,89 @@ export default function App() {
                     placeholder="例如: 60"
                   />
                 </div>
+
+                <div className="h-px w-full bg-[var(--color-warm-border)] my-6"></div>
+
+                <button
+                  onClick={() => setShowAdvanced(!showAdvanced)}
+                  className="w-full flex items-center justify-between text-xl font-serif font-semibold text-[var(--color-olive)] hover:opacity-80 transition-opacity"
+                >
+                  <span className="flex items-center gap-2">
+                    <Target className="w-5 h-5 text-[var(--color-warm-accent)]" />
+                    專屬健康藍圖 <span className="text-sm font-sans font-normal text-[var(--color-warm-muted)] ml-1">(進階設定)</span>
+                  </span>
+                  {showAdvanced ? <ChevronUp className="w-5 h-5 text-[var(--color-warm-muted)]" /> : <ChevronDown className="w-5 h-5 text-[var(--color-warm-muted)]" />}
+                </button>
+
+                <AnimatePresence>
+                  {showAdvanced && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="space-y-6 pt-6 pb-2">
+                        <div>
+                          <label className="block text-sm font-medium text-[var(--color-warm-muted)] mb-2 flex items-center gap-1">
+                            主要目標
+                          </label>
+                          <div className="grid grid-cols-3 gap-2">
+                            {[
+                              { id: 'lose_weight', label: '減重' },
+                              { id: 'maintain', label: '維持' },
+                              { id: 'gain_muscle', label: '增肌' }
+                            ].map(goal => (
+                              <button
+                                key={goal.id}
+                                onClick={() => setPrimaryGoal(goal.id)}
+                                className={`py-2 text-sm rounded-xl transition-colors ${primaryGoal === goal.id ? 'bg-[var(--color-olive)] text-white shadow-sm' : 'bg-[#f5f4f0] text-[var(--color-warm-muted)] hover:bg-[#e8e7e3]'}`}
+                              >
+                                {goal.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium text-[var(--color-warm-muted)] mb-2 flex items-center gap-1">
+                              <Dumbbell className="w-4 h-4" /> 日常活動量
+                            </label>
+                            <div className="relative">
+                              <select
+                                value={fitnessLevel}
+                                onChange={(e) => setFitnessLevel(e.target.value)}
+                                className="w-full bg-[#f5f4f0] border-transparent focus:bg-white focus:border-[var(--color-warm-accent)] focus:ring-2 focus:ring-[var(--color-warm-accent)]/20 rounded-2xl px-4 py-3 outline-none transition-all appearance-none"
+                              >
+                                <option value="sedentary">幾乎不運動</option>
+                                <option value="light">輕度活動</option>
+                                <option value="moderate">中度活動</option>
+                                <option value="active">高度活動</option>
+                              </select>
+                              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-[var(--color-warm-muted)]">
+                                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-[var(--color-warm-muted)] mb-2 flex items-center gap-1">
+                              目標體重 <span className="text-xs">(選填, 公斤)</span>
+                            </label>
+                            <input
+                              type="number"
+                              value={targetWeight}
+                              onChange={(e) => setTargetWeight(e.target.value)}
+                              className="w-full bg-[#f5f4f0] border-transparent focus:bg-white focus:border-[var(--color-warm-accent)] focus:ring-2 focus:ring-[var(--color-warm-accent)]/20 rounded-2xl px-4 py-3 outline-none transition-all"
+                              placeholder="例如: 55"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 {error && (
                   <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-500 text-sm">
