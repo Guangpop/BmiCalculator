@@ -191,10 +191,10 @@ export default function App() {
                                 onChange={(e) => setFitnessLevel(e.target.value)}
                                 className="w-full bg-[#f5f4f0] border-transparent focus:bg-white focus:border-[var(--color-warm-accent)] focus:ring-2 focus:ring-[var(--color-warm-accent)]/20 rounded-2xl px-4 py-3 outline-none transition-all appearance-none"
                               >
-                                <option value="sedentary">幾乎不運動</option>
-                                <option value="light">輕度活動</option>
-                                <option value="moderate">中度活動</option>
-                                <option value="active">高度活動</option>
+                                <option value="sedentary">沒有時間運動</option>
+                                <option value="light">輕度運動（走路或散步）</option>
+                                <option value="moderate">中度運動（跑步或偶爾上健身房）</option>
+                                <option value="active">高度運動（定期安排運動計劃）</option>
                               </select>
                               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-[var(--color-warm-muted)]">
                                 <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
