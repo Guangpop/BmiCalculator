@@ -66,7 +66,6 @@ export default function App() {
     setTargetWeight('');
     setFitnessLevel('moderate');
     setPrimaryGoal('maintain');
-    setShowAdvanced(false);
     setBmi(null);
     setAdvice(null);
     setError(null);
