@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Activity, Apple, Heart, Info, Scale, Ruler, User, ArrowRight, RefreshCcw, Loader2, Target, Dumbbell, ChevronDown, ChevronUp } from 'lucide-react';
+import { Activity, Apple, Heart, Info, Scale, Ruler, User, ArrowRight, RefreshCcw, Loader2, Target, Dumbbell } from 'lucide-react';
 import { getAdvice, type AdviceObject } from './getAdvice';
 
 export default function App() {
@@ -12,7 +12,7 @@ export default function App() {
   const [targetWeight, setTargetWeight] = useState('');
   const [fitnessLevel, setFitnessLevel] = useState('moderate');
   const [primaryGoal, setPrimaryGoal] = useState('maintain');
-  const [showAdvanced, setShowAdvanced] = useState(false);
+
 
   const [bmi, setBmi] = useState<number | null>(null);
   const [advice, setAdvice] = useState<AdviceObject | null>(null);
@@ -154,26 +154,12 @@ export default function App() {
 
                 <div className="h-px w-full bg-[var(--color-warm-border)] my-6"></div>
 
-                <button
-                  onClick={() => setShowAdvanced(!showAdvanced)}
-                  className="w-full flex items-center justify-between text-xl font-serif font-semibold text-[var(--color-olive)] hover:opacity-80 transition-opacity"
-                >
-                  <span className="flex items-center gap-2">
-                    <Target className="w-5 h-5 text-[var(--color-warm-accent)]" />
-                    專屬健康藍圖 <span className="text-sm font-sans font-normal text-[var(--color-warm-muted)] ml-1">(進階設定)</span>
-                  </span>
-                  {showAdvanced ? <ChevronUp className="w-5 h-5 text-[var(--color-warm-muted)]" /> : <ChevronDown className="w-5 h-5 text-[var(--color-warm-muted)]" />}
-                </button>
+                <h3 className="text-xl font-serif font-semibold text-[var(--color-olive)] flex items-center gap-2">
+                  <Target className="w-5 h-5 text-[var(--color-warm-accent)]" />
+                  專屬健康藍圖
+                </h3>
 
-                <AnimatePresence>
-                  {showAdvanced && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="space-y-6 pt-6 pb-2">
+                <div className="space-y-6 pt-4 pb-2">
                         <div>
                           <label className="block text-sm font-medium text-[var(--color-warm-muted)] mb-2 flex items-center gap-1">
                             主要目標
@@ -230,10 +216,7 @@ export default function App() {
                             />
                           </div>
                         </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                </div>
 
                 {error && (
                   <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-500 text-sm">
