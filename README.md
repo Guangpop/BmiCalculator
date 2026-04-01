@@ -1,20 +1,17 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# 知己健康 - BMI 計算機
 
-# Run and deploy your AI Studio app
+個人化健康管理工具，根據 BMI、年齡、性別、運動習慣和健康目標，提供專屬的飲食、運動和日常健康建議。
 
-This contains everything you need to run your app locally.
+## 功能
 
-View your app in AI Studio: https://ai.studio/apps/ff80722d-ee2e-4bc8-bcdd-af118b34f462
+- BMI 計算（身高/體重輸入）
+- 個人化健康建議（飲食、運動、日常提醒）
+- 目標體重追蹤
+- 支援多種健康目標（減重、維持、增肌）
 
-## Run Locally
+## 開發
 
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+```bash
+npm install
+npm run dev
+```
